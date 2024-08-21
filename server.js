@@ -1,10 +1,13 @@
 const express = require('express');
 const fs = require('fs');
+const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public'))); // Serve static files from the "public" directory
 
+// Define the /log route
 app.post('/log', (req, res) => {
   console.log('POST /log route hit');
   const logEntry = req.body;
