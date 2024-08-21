@@ -1,17 +1,15 @@
-document.getElementById('rateForm').addEventListener('submit', function(e) {
+document.getElementById('rateForm').addEventListener('submit', function (e) {
     e.preventDefault();
-    
+
     const zipCode = document.getElementById('zipCode').value;
     const shipmentWeight = document.getElementById('shipmentWeight').value;
     const resultDiv = document.getElementById('result');
-    
+
     const logEntry = {
-        date: new Date().toLocaleString(),
+        date: new Date().toISOString(),
         zipCode: zipCode,
-        shipmentWeight: shipmentWeight,
-        rate: calculateRate(zipCode, shipmentWeight), // Placeholder for the rate calculation logic
-        error: null,
-        ip: "Unknown" // In a production app, you'd get the IP from the server or an external service
+        shipmentWeight: parseFloat(shipmentWeight),
+        ip: "127.0.0.1" // You can leave this as a placeholder; it will be replaced by the server
     };
 
     fetch('/log', {
@@ -24,32 +22,18 @@ document.getElementById('rateForm').addEventListener('submit', function(e) {
     .then(response => response.json())
     .then(data => {
         if (data.message === 'Log saved successfully') {
-            resultDiv.textContent = `The calculated rate is $${logEntry.rate}.`;
+            resultDiv.textContent = `$${data.rate.toFixed(2)}`;
             resultDiv.style.display = 'block';
         } else {
-            resultDiv.textContent = 'There was an issue saving the log data.';
+            resultDiv.textContent = 'Error calculating rate. Please try again.';
             resultDiv.style.display = 'block';
-            resultDiv.style.backgroundColor = '#f8d7da';
-            resultDiv.style.color = '#721c24';
+            resultDiv.style.color = 'red';
         }
     })
     .catch(error => {
-        console.error('Error logging data:', error);
-        resultDiv.textContent = 'An error occurred while calculating the rate.';
+        console.error('Error:', error);
+        resultDiv.textContent = 'Error calculating rate. Please try again.';
         resultDiv.style.display = 'block';
-        resultDiv.style.backgroundColor = '#f8d7da';
-        resultDiv.style.color = '#721c24';
+        resultDiv.style.color = 'red';
     });
 });
-
-document.getElementById('clearButton').addEventListener('click', function() {
-    document.getElementById('rateForm').reset();
-    document.getElementById('result').style.display = 'none';
-});
-
-// Placeholder for rate calculation logic
-function calculateRate(zipCode, weight) {
-    // In a real app, this would include logic based on your pricing matrix.
-    // For simplicity, let's return a static rate.
-    return 100;
-}
