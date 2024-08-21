@@ -18,15 +18,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Function to get the national diesel price from the API
 async function getDieselPrice() {
   try {
-    const response = await axios.get('https://api.eia.gov/v2/petroleum/pri/gnd/data/?frequency=weekly&data[0]=value&facets[series][]=EMD_EPD2D_PTE_NUS_DPG&sort[0][column]=period&sort[0][direction]=desc&offset=0&length=5000');
+    const response = await axios.get('https://api.eia.gov/v2/petroleum/pri/gnd/data/?frequency=weekly&data[0]=value&facets[series][]=EMD_EPD2D_PTE_NUS_DPG&sort[0][column]=period&sort[0][direction]=desc&offset=0&length=5000&api_key=skeZaLa1T8axibuDLl5lo9W7hD08lsudhyHneZvc');
+    
+    // Check if there is an error in the response
+    if (response.data && response.data.error) {
+      console.error('API Error:', response.data.error);
+      return null;
+    }
+    
     // Extract the most recent diesel price
     const dieselPrice = response.data.response.data[0].value;
     return dieselPrice;
   } catch (error) {
-    console.error('Error fetching diesel price:', error);
+    console.error('Error fetching diesel price:', error.response ? error.response.data : error.message);
     return null; // Return null if there’s an issue
   }
 }
+
 
 // Function to calculate the FSC based on the diesel price
 function calculateFSC(dieselPrice) {
