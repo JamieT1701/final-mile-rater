@@ -64,15 +64,16 @@ async function calculateRate(zipCode, weight) {
       [zone, weight]
     );
     if (result.rows.length > 0) {
-      const baseRate = result.rows[0].rate;
+      const baseRate = parseFloat(result.rows[0].rate);
       const dieselPrice = await getDieselPrice();
       if (dieselPrice === null) {
         console.error('Unable to fetch diesel price. FSC cannot be applied.');
         return { linehaul: baseRate, fsc: 0, totalRate: baseRate };
       }
       const fscPercentage = calculateFSC(dieselPrice);
-      const fscAmount = (baseRate * fscPercentage) / 100;
-      const totalRate = baseRate + fscAmount;
+      const fscAmount = parseFloat(((baseRate * fscPercentage) / 100).toFixed(2));
+      const totalRate = parseFloat((baseRate + fscAmount).toFixed(2));
+
       return { linehaul: baseRate, fsc: fscAmount, totalRate: totalRate };
     } else {
       return null;
@@ -86,7 +87,15 @@ async function calculateRate(zipCode, weight) {
 // POST route to log calculation and return rate details
 app.post('/log', async (req, res) => {
   const { date, zipCode, shipmentWeight, ip } = req.body;
-  const rateDetails = await calculateRate(zipCode, shipmentWeight);
+
+  // Validate and parse the shipmentWeight to ensure it's numeric
+  const validShipmentWeight = parseFloat(shipmentWeight);
+  if (isNaN(validShipmentWeight)) {
+    console.error('Invalid shipment weight:', shipmentWeight);
+    return res.status(400).json({ message: 'Invalid shipment weight' });
+  }
+
+  const rateDetails = await calculateRate(zipCode, validShipmentWeight);
 
   if (rateDetails === null) {
     return res.status(200).json({
@@ -94,10 +103,19 @@ app.post('/log', async (req, res) => {
     });
   }
 
+  // Log the values before the database insert
+  console.log('Logging data:', {
+    date,
+    zipCode,
+    shipmentWeight: validShipmentWeight,
+    totalRate: rateDetails.totalRate,
+    ip
+  });
+
   try {
     await pool.query(
       'INSERT INTO logs (date, zip_code, shipment_weight, rate, error, ip) VALUES ($1, $2, $3, $4, $5, $6)',
-      [date, zipCode, shipmentWeight, rateDetails.totalRate, null, ip]
+      [date, zipCode, validShipmentWeight, rateDetails.totalRate, null, ip]
     );
     res.status(200).json({
       message: 'Log saved successfully',
