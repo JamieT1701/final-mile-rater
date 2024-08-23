@@ -1,36 +1,44 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    margin: 0;
-    padding: 20px;
-    height: 100vh;
+/* Adjust table text size and layout */
+#log-table-container {
+    overflow-x: auto;
+    font-size: 0.85rem;
+    margin-top: 1rem;
+}
+
+#log-table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+#log-table th, #log-table td {
+    text-align: center;
+    padding: 0.5rem;
+    white-space: nowrap;
+}
+
+/* Pagination styles */
+.pagination {
     display: flex;
     justify-content: center;
-    align-items: center;
-    text-align: center;
+    margin-top: 1rem;
 }
 
-.container {
-    max-width: 500px;
-    background: #fff;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-}
-
-.result-container {
-    display: none;
-}
-
-.error {
-    font-weight: bold;
-}
-
-#log-table-container {
-    display: none;
-}
-
-#toggleLogsButton {
+.pagination button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    font-size: 0.9rem;
     cursor: pointer;
+    background-color: #5cb85c;
+    border: none;
+    color: white;
+    border-radius: 4px;
+}
+
+.pagination button:hover {
+    background-color: #4cae4c;
+}
+
+.pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
