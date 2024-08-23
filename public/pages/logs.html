@@ -3,49 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SF Distributors | Rate Logs</title>
-    <link rel="stylesheet" href="/styles/styles.css">
-    <script src="/loadComponents.js" defer></script>
+    <title>Log Reports</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+    <script defer src="../logs.js"></script>
 </head>
 <body>
-    <!-- Header and Navigation -->
-    <div id="header-placeholder"></div>
+    <div id="header-container"></div>
+    <div id="nav"></div>
 
-    <!-- Main Content -->
     <div class="container">
-        <h2>Rate Logs</h2>
-        <div class="pagination-controls">
-            <button id="firstPageBtn" class="pagination-button">First Page</button>
-            <button id="prevPageBtn" class="pagination-button">Previous Page</button>
-            <span class="page-indicator" id="pageIndicator"></span>
-            <button id="nextPageBtn" class="pagination-button">Next Page</button>
-            <button id="lastPageBtn" class="pagination-button">Last Page</button>
-            <select id="recordsPerPageSelect">
-                <option value="10">10</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-                <option value="all">All</option>
-            </select>
-        </div>
-        <table class="log-table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Zip Code</th>
-                    <th>Shipment Weight</th>
-                    <th>Linehaul</th>
-                    <th>FSC</th>
-                    <th>Total Rate</th>
-                    <th>Zone</th>
-                </tr>
-            </thead>
-            <tbody id="log-table-body"></tbody>
-        </table>
+      <h2>Rate Logs</h2>
+      <div class="pagination-controls">
+          <select id="records-per-page">
+              <option value="10">10 records per page</option>
+              <option value="50">50 records per page</option>
+              <option value="100">100 records per page</option>
+              <option value="all">All records</option>
+          </select>
+      </div>
+      <table class="log-table">
+          <thead>
+              <tr>
+                  <th>Date</th>
+                  <th>Zip Code</th>
+                  <th>Shipment Weight</th>
+                  <th>Linehaul</th>
+                  <th>FSC</th>
+                  <th>Total Rate</th>
+                  <th>Zone</th>
+              </tr>
+          </thead>
+          <tbody id="log-table-body">
+              <!-- Log data will be dynamically added here -->
+          </tbody>
+      </table>
+
+        <!-- Pagination Controls (Bottom) -->
+        <div id="pagination-controls" class="pagination-controls"></div>
     </div>
 
-    <!-- Footer -->
-    <div id="footer-placeholder"></div>
-
-    <script src="/logs.js"></script>
+    <div id="footer-container"></div>
+    <script src="../loadComponents.js"></script>
 </body>
 </html>

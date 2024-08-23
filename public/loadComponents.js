@@ -1,23 +1,22 @@
-// Load Header
-fetch('/components/header.html')
-  .then(response => response.text())
-  .then(data => {
-    document.getElementById('header-placeholder').innerHTML = data;
+document.addEventListener('DOMContentLoaded', function () {
+  // Load header
+  fetch('../components/header.html')
+    .then((response) => response.text())
+    .then((data) => {
+      document.getElementById('header-container').innerHTML = data;
 
-    // After loading the header, load the navigation
-    fetch('/components/nav.html')
-      .then(response => response.text())
-      .then(navData => {
-        document.getElementById('nav-placeholder').innerHTML = navData;
-      })
-      .catch(error => console.error('Error loading navigation:', error));
-  })
-  .catch(error => console.error('Error loading header:', error));
+      // Load the navigation dynamically into the header
+      return fetch('../components/nav.html');
+    })
+    .then((response) => response.text())
+    .then((navData) => {
+      document.getElementById('nav-container').innerHTML = navData;
+    });
 
-// Load Footer
-fetch('/components/footer.html')
-  .then(response => response.text())
-  .then(data => {
-    document.getElementById('footer-placeholder').innerHTML = data;
-  })
-  .catch(error => console.error('Error loading footer:', error));
+  // Load footer
+  fetch('../components/footer.html')
+    .then((response) => response.text())
+    .then((data) => {
+      document.getElementById('footer-container').innerHTML = data;
+    });
+});

@@ -1,102 +1,118 @@
-document.addEventListener('DOMContentLoaded', () => {
-    let currentPage = 1;
-    const recordsPerPage = 10; // Default number of records per page
-    let logs = [];
+document.addEventListener('DOMContentLoaded', function () {
+  const logTableBody = document.getElementById('log-table-body');
+  const paginationControls = document.querySelector('.pagination-controls');
+  const recordsPerPageSelect = document.getElementById('records-per-page');
+  let logs = [];
+  let currentPage = 1;
+  let recordsPerPage = 10;
 
-    async function fetchLogs() {
-        try {
-            const response = await fetch('/logs');
-            logs = await response.json();
-            displayLogs(currentPage, recordsPerPage);
-            setupPagination();
-        } catch (err) {
-            console.error('Error fetching logs:', err);
-            document.getElementById('no-data-message').style.display = 'block';
-        }
-    }
+  // Fetch logs data
+  async function fetchLogs() {
+      try {
+          const response = await fetch('/logs');
+          logs = await response.json();
+          renderLogs();
+          setupPagination();
+      } catch (error) {
+          console.error('Error fetching logs:', error);
+      }
+  }
 
-    function displayLogs(page, recordsPerPage) {
-        const logTableBody = document.getElementById('log-table-body');
-        logTableBody.innerHTML = '';
+  // Render logs data in the table
+  function renderLogs() {
+      const startIndex = (currentPage - 1) * recordsPerPage;
+      const endIndex = startIndex + recordsPerPage;
+      const paginatedLogs = logs.slice(startIndex, endIndex);
 
-        const startIndex = (page - 1) * recordsPerPage;
-        const endIndex = Math.min(startIndex + recordsPerPage, logs.length);
+      logTableBody.innerHTML = '';
 
-        if (logs.length === 0) {
-            document.getElementById('no-data-message').style.display = 'block';
-        } else {
-            document.getElementById('no-data-message').style.display = 'none';
-            for (let i = startIndex; i < endIndex; i++) {
-                const log = logs[i];
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${new Date(log.date).toLocaleString()}</td>
-                    <td>${log.zip_code || ''}</td>
-                    <td>${log.shipment_weight}</td>
-                    <td>$${log.linehaul.toFixed(2)}</td>
-                    <td>$${log.fsc.toFixed(2)}</td>
-                    <td>$${log.total_rate.toFixed(2)}</td>
-                    <td>${log.zone || ''}</td>
-                `;
-                logTableBody.appendChild(row);
-            }
-        }
-    }
+      if (paginatedLogs.length === 0) {
+          logTableBody.innerHTML = '<tr><td colspan="7">No log data available.</td></tr>';
+      } else {
+          paginatedLogs.forEach(log => {
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                  <td>${new Date(log.date).toLocaleString()}</td>
+                  <td>${log.zip_code || ''}</td>
+                  <td>${log.shipment_weight || ''}</td>
+                  <td>${log.linehaul || ''}</td>
+                  <td>${log.fsc || ''}</td>
+                  <td>${log.total_rate || ''}</td>
+                  <td>${log.zone || ''}</td>
+              `;
+              logTableBody.appendChild(row);
+          });
+      }
+  }
 
-    function setupPagination() {
-        const paginationControls = document.getElementById('pagination-controls');
-        paginationControls.innerHTML = '';
+  // Setup pagination controls
+  function setupPagination() {
+      const totalPages = Math.ceil(logs.length / recordsPerPage);
+      paginationControls.innerHTML = '';
 
-        const totalPages = Math.ceil(logs.length / recordsPerPage);
+      const firstButton = document.createElement('button');
+      firstButton.textContent = 'First';
+      firstButton.className = 'pagination-button';
+      firstButton.disabled = currentPage === 1;
+      firstButton.addEventListener('click', () => {
+          currentPage = 1;
+          renderLogs();
+          setupPagination();
+      });
 
-        // First and Previous buttons
-        paginationControls.appendChild(createPaginationButton('First', () => goToPage(1)));
-        paginationControls.appendChild(createPaginationButton('Previous', () => goToPage(currentPage - 1)));
+      const prevButton = document.createElement('button');
+      prevButton.textContent = 'Previous';
+      prevButton.className = 'pagination-button';
+      prevButton.disabled = currentPage === 1;
+      prevButton.addEventListener('click', () => {
+          if (currentPage > 1) {
+              currentPage--;
+              renderLogs();
+              setupPagination();
+          }
+      });
 
-        // Page indicator
-        const pageIndicator = document.createElement('span');
-        pageIndicator.className = 'page-indicator';
-        pageIndicator.textContent = `Page ${currentPage} of ${totalPages}`;
-        paginationControls.appendChild(pageIndicator);
+      const nextButton = document.createElement('button');
+      nextButton.textContent = 'Next';
+      nextButton.className = 'pagination-button';
+      nextButton.disabled = currentPage === totalPages;
+      nextButton.addEventListener('click', () => {
+          if (currentPage < totalPages) {
+              currentPage++;
+              renderLogs();
+              setupPagination();
+          }
+      });
 
-        // Next and Last buttons
-        paginationControls.appendChild(createPaginationButton('Next', () => goToPage(currentPage + 1)));
-        paginationControls.appendChild(createPaginationButton('Last', () => goToPage(totalPages)));
+      const lastButton = document.createElement('button');
+      lastButton.textContent = 'Last';
+      lastButton.className = 'pagination-button';
+      lastButton.disabled = currentPage === totalPages;
+      lastButton.addEventListener('click', () => {
+          currentPage = totalPages;
+          renderLogs();
+          setupPagination();
+      });
 
-        // Dropdown to select records per page
-        const recordsDropdown = document.createElement('select');
-        recordsDropdown.innerHTML = `
-            <option value="10">10</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-            <option value="All">All</option>
-        `;
-        recordsDropdown.value = recordsPerPage;
-        recordsDropdown.addEventListener('change', (e) => {
-            const value = e.target.value === 'All' ? logs.length : parseInt(e.target.value);
-            currentPage = 1;
-            displayLogs(currentPage, value);
-            setupPagination();
-        });
-        paginationControls.appendChild(recordsDropdown);
-    }
+      const pageIndicator = document.createElement('span');
+      pageIndicator.className = 'page-indicator';
+      pageIndicator.textContent = `Page ${currentPage} of ${totalPages}`;
 
-    function createPaginationButton(label, onClick) {
-        const button = document.createElement('button');
-        button.textContent = label;
-        button.className = 'pagination-button';
-        button.disabled = (label === 'First' && currentPage === 1) || (label === 'Previous' && currentPage === 1) || (label === 'Next' && currentPage === Math.ceil(logs.length / recordsPerPage)) || (label === 'Last' && currentPage === Math.ceil(logs.length / recordsPerPage));
-        button.addEventListener('click', onClick);
-        return button;
-    }
+      paginationControls.appendChild(firstButton);
+      paginationControls.appendChild(prevButton);
+      paginationControls.appendChild(pageIndicator);
+      paginationControls.appendChild(nextButton);
+      paginationControls.appendChild(lastButton);
+  }
 
-    function goToPage(page) {
-        const totalPages = Math.ceil(logs.length / recordsPerPage);
-        if (page < 1 || page > totalPages) return;
-        currentPage = page;
-        displayLogs(currentPage, recordsPerPage);
-        setupPagination();
-    }
+  // Handle changing the number of records per page
+  recordsPerPageSelect.addEventListener('change', function () {
+      recordsPerPage = parseInt(recordsPerPageSelect.value);
+      currentPage = 1; // Reset to the first page
+      renderLogs();
+      setupPagination();
+  });
 
-    fetchLogs();
+  // Fetch and display the logs initially
+  fetchLogs();
 });
