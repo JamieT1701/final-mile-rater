@@ -46,3 +46,27 @@ document.getElementById('rateForm').addEventListener('submit', function (e) {
         errorContainer.style.display = 'block';
     });
 });
+async function fetchLogs() {
+    try {
+      const response = await fetch('/logs');
+      const logs = await response.json();
+      
+      const logTableBody = document.getElementById('log-table-body');
+      logTableBody.innerHTML = ''; // Clear existing logs
+  
+      logs.forEach(log => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${new Date(log.date).toLocaleString()}</td>
+          <td>${log.zip_code}</td>
+          <td>${log.shipment_weight}</td>
+          <td>${log.rate}</td>
+          <td>${log.ip}</td>
+        `;
+        logTableBody.appendChild(row);
+      });
+    } catch (err) {
+      console.error('Error fetching logs:', err);
+    }
+  }
+  
