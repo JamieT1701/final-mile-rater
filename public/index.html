@@ -1,42 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Final Mile Rate Calculator</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>SF Distributors | Final Mile Rating Tool</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Rate Calculator</h1>
+    <!-- Header Section -->
+    <header>
+        <div class="logo-container">
+            <img src="img/SF-LOGO-Rect.png" alt="SF Distributors Logo" class="logo"> 
+            <h1>Final Mile Rating Tool</h1>
+        </div>
+        <!-- Navigation Bar -->
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Rate Calculator</a></li>
+                <li><a href="#">Log Reports</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h2>Rate Calculator</h2>
         <form id="rateForm">
-            <div class="form-group">
-                <label for="zipCode">Destination Zip Code:</label>
-                <input type="text" id="zipCode" name="zipCode" class="form-control" required>
-            </div>
+            <label for="zipCode">Destination Zip Code:</label>
+            <input type="text" id="zipCode" name="zipCode" required>
 
-            <div class="form-group">
-                <label for="shipmentWeight">Shipment Weight (lbs):</label>
-                <input type="number" id="shipmentWeight" name="shipmentWeight" class="form-control" required>
-            </div>
+            <label for="shipmentWeight">Shipment Weight (lbs):</label>
+            <input type="number" id="shipmentWeight" name="shipmentWeight" required>
 
-            <button type="submit" class="btn btn-success btn-block">Calculate Rate</button>
+            <button type="submit">Calculate Rate</button>
         </form>
 
-        <div id="result" class="result-container mt-4 p-3 border rounded bg-light" style="display: none;">
+        <div id="result" class="result-container" style="display: none;">
             <p><strong>Linehaul Rate:</strong> $<span id="linehaul"></span></p>
             <p><strong>Fuel Surcharge (FSC):</strong> $<span id="fsc"></span></p>
             <hr>
             <p><strong>Total Rate:</strong> $<span id="totalRate"></span></p>
         </div>
-        <p id="error" class="text-danger mt-3" style="display: none;"></p>
+        <p id="error" class="error" style="display: none;"></p>
 
-        <!-- Toggle Button -->
-        <button id="toggleLogsButton" class="btn btn-secondary btn-sm mt-4">Show Rating Logs</button>
+        <button id="toggleLogsButton">Show Rating Logs</button>
 
-        <!-- Log Table Container -->
+        <!-- Logs Table -->
         <div id="log-table-container" style="display: none;">
             <table id="log-table">
                 <thead>
@@ -54,10 +67,9 @@
             </table>
             <div class="pagination"></div> <!-- Pagination container -->
         </div>
-        
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    </div>
+
     <script src="script.js"></script>
 </body>
+
 </html>
