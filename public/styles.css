@@ -127,9 +127,10 @@ button:hover {
 
 #log-table {
     width: 100%;
-    table-layout: fixed;
+    table-layout: auto; /* Allow cells to adjust to content */
     border-collapse: collapse;
     margin-top: 20px;
+    word-wrap: break-word; /* Ensure content fits within cells */
 }
 
 #log-table th,
@@ -137,7 +138,6 @@ button:hover {
     text-align: center;
     padding: 0.5rem;
     border: 1px solid #ddd;
-    white-space: nowrap;
 }
 
 #log-table th {
@@ -145,14 +145,21 @@ button:hover {
     color: white;
 }
 
+/* Pagination Controls */
 .pagination {
     display: flex;
     justify-content: center;
+    align-items: center;
     margin-top: 1rem;
+    gap: 10px;
+}
+
+.pagination select.records-per-page {
+    padding: 5px;
+    font-size: 0.9rem;
 }
 
 .pagination button {
-    margin: 0 5px;
     padding: 5px 10px;
     font-size: 0.9rem;
     cursor: pointer;
