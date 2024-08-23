@@ -2,6 +2,7 @@ const express = require('express');
 const { Pool } = require('pg');
 const axios = require('axios');
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
@@ -17,29 +18,27 @@ const pool = new Pool({
 
 // Middleware to parse JSON and serve static files
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public'))); // Serve static assets from the public folder
+app.use(express.static('public')); // Serve static assets from the public folder
 
 // Trust the proxy to get the real IP address from the X-Forwarded-For header
 app.set('trust proxy', true);
 
-// Serve the homepage
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public/pages/index.html'));
-});
-
 // Dynamic route to serve any HTML file from /public/pages/
 app.get('/:page', (req, res) => {
-  const filePath = path.join(__dirname, 'public/pages', `${req.params.page}.html`);
-  res.sendFile(filePath, (err) => {
-    if (err) {
-      res.status(404).sendFile(path.join(__dirname, 'public/pages/404.html'));
-    }
-  });
+  const page = req.params.page;
+  const filePath = __dirname + `/public/pages/${page}.html`;
+
+  // Check if the file exists before sending it
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+    res.status(404).sendFile(__dirname + '/public/pages/404.html');
+  }
 });
 
 // Handle 404 errors for unknown pages
 app.use((req, res) => {
-  res.status(404).sendFile(path.join(__dirname, 'public/pages/404.html'));
+  res.status(404).sendFile(__dirname + '/public/pages/404.html');
 });
 
 // Function to get the national diesel price from the API
@@ -113,7 +112,6 @@ async function calculateRate(zipCode, weight) {
     return null;
   }
 }
-
 // POST route to log calculation and return rate details
 app.post('/log', async (req, res) => {
   const { date, zipCode, shipmentWeight } = req.body;
@@ -124,50 +122,53 @@ app.post('/log', async (req, res) => {
   // Validate and parse the shipmentWeight to ensure it's numeric
   const validShipmentWeight = parseFloat(shipmentWeight);
   if (isNaN(validShipmentWeight)) {
-    console.error('Invalid shipment weight:', shipmentWeight);
-    return res.status(400).json({ message: 'Invalid shipment weight' });
+      console.error('Invalid shipment weight:', shipmentWeight);
+      return res.status(400).json({ message: 'Invalid shipment weight' });
   }
 
   const rateDetails = await calculateRate(zipCode, validShipmentWeight);
 
   if (rateDetails === null) {
-    return res.status(200).json({
-      message: 'Error calculating rate',
-    });
+      return res.status(200).json({
+          message: 'Error calculating rate',
+      });
   }
 
   // Log the values before the database insert
   console.log('Logging data:', {
-    date,
-    zipCode,
-    shipmentWeight: validShipmentWeight,
-    linehaul: rateDetails.linehaul,
-    fsc: rateDetails.fsc,
-    totalRate: rateDetails.totalRate,
-    zone: rateDetails.zone,
-    ip,
-  });
-
-  try {
-    await pool.query('INSERT INTO logs (date, zip_code, shipment_weight, linehaul, fsc, total_rate, zone, ip) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', [
       date,
       zipCode,
-      validShipmentWeight,
-      rateDetails.linehaul,
-      rateDetails.fsc,
-      rateDetails.totalRate,
-      rateDetails.zone,
-      ip,
-    ]);
-    res.status(200).json({
-      message: 'Log saved successfully',
+      shipmentWeight: validShipmentWeight,
       linehaul: rateDetails.linehaul,
       fsc: rateDetails.fsc,
       totalRate: rateDetails.totalRate,
-    });
+      zone: rateDetails.zone,
+      ip,
+  });
+
+  try {
+      await pool.query(
+          'INSERT INTO logs (date, zip_code, shipment_weight, linehaul, fsc, total_rate, zone, ip) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+          [
+              date,
+              zipCode,
+              validShipmentWeight,
+              rateDetails.linehaul,
+              rateDetails.fsc,
+              rateDetails.totalRate,
+              rateDetails.zone,
+              ip,
+          ]
+      );
+      res.status(200).json({
+          message: 'Log saved successfully',
+          linehaul: rateDetails.linehaul,
+          fsc: rateDetails.fsc,
+          totalRate: rateDetails.totalRate,
+      });
   } catch (err) {
-    console.error('Error saving log data:', err);
-    res.status(500).json({ message: 'Error saving log data' });
+      console.error('Error saving log data:', err);
+      res.status(500).json({ message: 'Error saving log data' });
   }
 });
 

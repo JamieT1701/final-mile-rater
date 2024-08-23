@@ -3,16 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SF Distributors Final Mile</title>
+    <title>SF Distributors | Final Mile Rate Calculator</title>
     <link rel="stylesheet" href="/styles/styles.css">
-    <script src="/loadComponents.js"></script>
+    <script src="/loadComponents.js" defer></script>
 </head>
 <body>
-    <div id="header"></div>
-    <div id="nav"></div>
+    <!-- Header and Navigation -->
+    <div id="header-placeholder"></div>
 
-    <!-- Main content here -->
+    <!-- Main Content -->
+    <div class="container">
+        <h2>Final Mile Rate Calculator</h2>
+        <form id="rateForm">
+            <label for="zipCode">Destination Zip Code:</label>
+            <input type="text" id="zipCode" name="zipCode" required>
+        
+            <label for="shipmentWeight">Shipment Weight (lbs):</label>
+            <input type="number" id="shipmentWeight" name="shipmentWeight" required>
+        
+            <button type="submit">Calculate Rate</button>
+        </form>
+        
+        <div id="result" class="result-container" style="display: none;">
+            <p><strong>Linehaul Rate:</strong> $<span id="linehaul"></span></p>
+            <p><strong>Fuel Surcharge (FSC):</strong> $<span id="fsc"></span></p>
+            <hr>
+            <p><strong>Total Rate:</strong> $<span id="totalRate"></span></p>
+        </div>
+        <p id="error" class="error" style="display: none;"></p>
+        
+    </div>
 
-    <div id="footer"></div>
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <script src="/script.js"></script>
 </body>
 </html>
