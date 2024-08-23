@@ -65,12 +65,12 @@ async function fetchLogs() {
                 <td>${log.zip_code}</td>
                 <td>${log.shipment_weight}</td>
                 <td>${log.zone}</td>
-                <td>$${log.linehaul.toFixed(2)}</td>
-                <td>$${log.fsc.toFixed(2)}</td>
-                <td>$${log.total_rate.toFixed(2)}</td>
+                <td>${log.linehaul}</td>
+                <td>${log.fsc}</td>
+                <td>${log.total_rate}</td>
             `;
             logTableBody.appendChild(row);
-        });
+        });        
     } catch (err) {
         console.error('Error fetching logs:', err);
     }
