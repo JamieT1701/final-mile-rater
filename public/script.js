@@ -14,8 +14,8 @@ document.getElementById('rateForm').addEventListener('submit', function (e) {
     const logEntry = {
         date: new Date().toISOString(),
         zipCode: zipCode,
-        shipmentWeight: parseFloat(shipmentWeight) // Parse to ensure it's a number
-        // No need to include the IP; it's handled server-side
+        shipmentWeight: parseFloat(shipmentWeight)
+        // IP is handled server-side
     };
 
     fetch('/log', {

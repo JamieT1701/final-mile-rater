@@ -14,7 +14,7 @@ const pool = new Pool({
 });
 
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static('public')); // Serve static files (like index.html))
 
 // Trust the proxy to get the real IP address from the X-Forwarded-For header
 app.set('trust proxy', true);
@@ -32,6 +32,20 @@ async function getDieselPrice() {
     return dieselPrice;
   } catch (error) {
     console.error('Error fetching diesel price:', error.response ? error.response.data : error.message);
+    return null;
+  }
+}
+
+// Function to get the zone based on zip code
+async function getZoneByZipCode(zipCode) {
+  try {
+    const result = await pool.query(
+      'SELECT zone FROM zip_to_zone WHERE zip_code = $1',
+      [zipCode]
+    );
+    return result.rows.length > 0 ? result.rows[0].zone : null;
+  } catch (err) {
+    console.error('Error fetching zone:', err);
     return null;
   }
 }
