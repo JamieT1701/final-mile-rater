@@ -129,6 +129,17 @@ app.post('/log', async (req, res) => {
   }
 });
 
+app.get('/logs', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM logs ORDER BY date DESC');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching logs:', err);
+    res.status(500).json({ message: 'Error fetching logs' });
+  }
+});
+
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
