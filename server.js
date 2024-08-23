@@ -14,7 +14,7 @@ const pool = new Pool({
 });
 
 app.use(express.json());
-app.use(express.static('public')); // Serve static files (like index.html)
+app.use(express.static('public'));
 
 // Trust the proxy to get the real IP address from the X-Forwarded-For header
 app.set('trust proxy', true);
@@ -28,23 +28,10 @@ async function getDieselPrice() {
       return null;
     }
     const dieselPrice = response.data.response.data[0].value;
+    console.log('Fetched Diesel Price:', dieselPrice); // Log the fetched diesel price
     return dieselPrice;
   } catch (error) {
     console.error('Error fetching diesel price:', error.response ? error.response.data : error.message);
-    return null;
-  }
-}
-
-// Function to get the zone based on zip code
-async function getZoneByZipCode(zipCode) {
-  try {
-    const result = await pool.query(
-      'SELECT zone FROM zip_to_zone WHERE zip_code = $1',
-      [zipCode]
-    );
-    return result.rows.length > 0 ? result.rows[0].zone : null;
-  } catch (err) {
-    console.error('Error fetching zone:', err);
     return null;
   }
 }
@@ -53,7 +40,9 @@ async function getZoneByZipCode(zipCode) {
 function calculateFSC(dieselPrice) {
   if (dieselPrice <= 3.25) return 0;
   const increments = Math.floor((dieselPrice - 3.25) / 0.25);
-  return increments * 2.5;
+  const fscPercentage = increments * 2.5;
+  console.log(`FSC Calculation -> Diesel Price: ${dieselPrice}, Increments: ${increments}, FSC Percentage: ${fscPercentage}%`); // Log FSC calculation details
+  return fscPercentage;
 }
 
 // Function to calculate the rate based on the zip code and weight
@@ -77,6 +66,7 @@ async function calculateRate(zipCode, weight) {
       const fscAmount = parseFloat(((baseRate * fscPercentage) / 100).toFixed(2));
       const totalRate = parseFloat((baseRate + fscAmount).toFixed(2));
 
+      console.log(`Final Rate Calculation -> Base Rate: $${baseRate}, FSC Amount: $${fscAmount}, Total Rate: $${totalRate}`); // Log final rate details
       return { linehaul: baseRate, fsc: fscAmount, totalRate: totalRate };
     } else {
       return null;
