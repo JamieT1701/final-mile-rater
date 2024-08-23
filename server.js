@@ -14,7 +14,23 @@ const pool = new Pool({
 });
 
 app.use(express.json());
-app.use(express.static('public')); // Serve static files (like index.html))
+app.use(express.static('public')); // Serve static files (like index.html)
+
+// Route to serve the root path ("/") with index.html
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/public/pages/index.html');
+});
+
+// Dynamic route to serve any HTML file from /public/pages/
+app.get('/:page', (req, res) => {
+  const page = req.params.page;
+  res.sendFile(__dirname + `/public/pages/${page}.html`);
+});
+
+// Handle 404 errors for unknown pages
+app.use((req, res) => {
+  res.status(404).sendFile(__dirname + '/public/pages/404.html');
+});
 
 // Trust the proxy to get the real IP address from the X-Forwarded-For header
 app.set('trust proxy', true);
@@ -63,7 +79,6 @@ function calculateFSC(dieselPrice) {
   return fscPercentage;
 }
 
-
 // Function to calculate the rate based on the zip code and weight
 async function calculateRate(zipCode, weight) {
   const zone = await getZoneByZipCode(zipCode);
@@ -96,8 +111,6 @@ async function calculateRate(zipCode, weight) {
     return null;
   }
 }
-
-
 
 // POST route to log calculation and return rate details
 app.post('/log', async (req, res) => {
@@ -150,7 +163,6 @@ app.post('/log', async (req, res) => {
   }
 });
 
-
 // GET route to fetch logs
 app.get('/logs', async (req, res) => {
   try {
@@ -161,7 +173,6 @@ app.get('/logs', async (req, res) => {
     res.status(500).json({ message: 'Error fetching logs' });
   }
 });
-
 
 // Start the server
 app.listen(port, () => {
