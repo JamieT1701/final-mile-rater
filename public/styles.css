@@ -4,93 +4,33 @@ body {
     color: #333;
     margin: 0;
     padding: 20px;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
     text-align: center;
 }
 
 .container {
+    max-width: 500px;
     background: #fff;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
-    width: 350px;
-}
-
-h1 {
-    margin-bottom: 20px;
-    color: #444;
-}
-
-label {
-    font-weight: bold;
-    margin-bottom: 10px;
-    display: block;
-    text-align: left;
-}
-
-input[type="text"],
-input[type="number"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-button {
-    background-color: #5cb85c;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    margin-bottom: 10px;
-}
-
-button:hover {
-    background-color: #4cae4c;
 }
 
 .result-container {
-    margin-top: 20px;
-    padding: 10px;
-    background: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-.result-container p {
-    margin: 5px 0;
+    display: none;
 }
 
 .error {
-    color: red;
     font-weight: bold;
 }
 
 #log-table-container {
-    margin-top: 20px;
-    display: none; /* Hidden by default */
+    display: none;
 }
 
-#log-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
-
-#log-table th,
-#log-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
-}
-
-#log-table th {
-    background-color: #f2f2f2;
-    font-weight: bold;
+#toggleLogsButton {
+    cursor: pointer;
 }

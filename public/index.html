@@ -4,36 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Final Mile Rate Calculator</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Rate Calculator</h1>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Rate Calculator</h1>
         <form id="rateForm">
-            <label for="zipCode">Destination Zip Code:</label>
-            <input type="text" id="zipCode" name="zipCode" required>
+            <div class="form-group">
+                <label for="zipCode">Destination Zip Code:</label>
+                <input type="text" id="zipCode" name="zipCode" class="form-control" required>
+            </div>
 
-            <label for="shipmentWeight">Shipment Weight (lbs):</label>
-            <input type="number" id="shipmentWeight" name="shipmentWeight" required>
+            <div class="form-group">
+                <label for="shipmentWeight">Shipment Weight (lbs):</label>
+                <input type="number" id="shipmentWeight" name="shipmentWeight" class="form-control" required>
+            </div>
 
-            <button type="submit">Calculate Rate</button>
+            <button type="submit" class="btn btn-success btn-block">Calculate Rate</button>
         </form>
 
-        <div id="result" class="result-container" style="display: none;">
+        <div id="result" class="result-container mt-4 p-3 border rounded bg-light" style="display: none;">
             <p><strong>Linehaul Rate:</strong> $<span id="linehaul"></span></p>
             <p><strong>Fuel Surcharge (FSC):</strong> $<span id="fsc"></span></p>
             <hr>
             <p><strong>Total Rate:</strong> $<span id="totalRate"></span></p>
         </div>
-        <p id="error" class="error" style="display: none;"></p>
+        <p id="error" class="text-danger mt-3" style="display: none;"></p>
 
         <!-- Toggle Button -->
-        <button id="toggleLogsButton">Show Rating Logs</button>
+        <button id="toggleLogsButton" class="btn btn-secondary btn-sm mt-4">Show Rating Logs</button>
 
         <!-- Log Table Container -->
-        <div id="log-table-container">
-            <table id="log-table">
-                <thead>
+        <div id="log-table-container" class="mt-4" style="display: none;">
+            <table id="log-table" class="table table-bordered table-striped">
+                <thead class="thead-dark">
                     <tr>
                         <th>Date</th>
                         <th>Zip Code</th>
@@ -50,6 +56,9 @@
             </table>
         </div>
     </div>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
