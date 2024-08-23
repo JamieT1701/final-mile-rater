@@ -12,15 +12,14 @@
     <!-- Header Section -->
     <header>
         <div class="logo-container">
-            <img src="img/SF-LOGO-Rect-but-sm.png" alt="SF Distributors Logo" class="logo"> 
+            <img src="your-logo.png" alt="SF Distributors Logo" class="logo"> <!-- Replace with your logo -->
             <h1>Final Mile Rating Tool</h1>
         </div>
         <!-- Navigation Bar -->
         <nav>
             <ul class="nav-menu">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Rate Calculator</a></li>
-                <li><a href="#">Log Reports</a></li>
+                <li><a href="index.html">Rate Calculator</a></li>
+                <li><a href="logs.html">Log Reports</a></li>
                 <li><a href="#">Contact</a></li>
             </ul>
         </nav>
@@ -46,27 +45,6 @@
             <p><strong>Total Rate:</strong> $<span id="totalRate"></span></p>
         </div>
         <p id="error" class="error" style="display: none;"></p>
-
-        <button id="toggleLogsButton">Show Rating Logs</button>
-
-        <!-- Logs Table -->
-        <div id="log-table-container" style="display: none;">
-            <table id="log-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Zip Code</th>
-                        <th>Shipment Weight</th>
-                        <th>Zone</th>
-                        <th>Linehaul</th>
-                        <th>FSC</th>
-                        <th>Total Rate</th>
-                    </tr>
-                </thead>
-                <tbody id="log-table-body"></tbody>
-            </table>
-            <div class="pagination"></div> <!-- Pagination container -->
-        </div>
     </div>
 
     <script src="script.js"></script>
