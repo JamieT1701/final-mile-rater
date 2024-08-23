@@ -35,7 +35,11 @@ app.get('/:page', (req, res) => {
   }
 });
 
-// Route to handle the home page separately
+// Handle specific routes to avoid hardcoding `/public/pages/`
+app.get('/logs', (req, res) => {
+  res.sendFile(`${__dirname}/public/pages/logs.html`);
+});
+
 app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/public/pages/index.html`);
 });
