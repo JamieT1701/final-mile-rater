@@ -5,18 +5,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SF Distributors | Log Reports</title>
+    <title>Rating Logs | SF Distributors</title>
     <link rel="stylesheet" href="../styles/styles.css">
 </head>
 
 <body>
+    <!-- Load Header, Navigation, and Layout dynamically -->
     <div id="header"></div>
     <div id="nav"></div>
     <div id="layout"></div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Rating Logs</h1>
+        <div id="pagination-controls" class="pagination-controls">
+            <!-- Pagination controls will be dynamically inserted here -->
+        </div>
+        <table class="log-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Zip Code</th>
+                    <th>Shipment Weight</th>
+                    <th>Linehaul</th>
+                    <th>FSC</th>
+                    <th>Total Rate</th>
+                    <th>Zone</th>
+                </tr>
+            </thead>
+            <tbody id="log-table-body">
+                <!-- Log data will be dynamically inserted here -->
+            </tbody>
+        </table>
+        <p id="no-data-message" class="no-data-message" style="display: none;">No logs available.</p>
+    </div>
+
+    <!-- Load Footer dynamically -->
     <div id="footer"></div>
 
+    <!-- Script to load components -->
     <script src="../loadComponents.js"></script>
-    <script src="../logs.js"></script> <!-- This script manages the log reports page -->
+    <!-- Script to handle log fetching and pagination -->
+    <script src="../logs.js"></script>
 </body>
 
 </html>
