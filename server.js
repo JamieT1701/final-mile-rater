@@ -11,8 +11,8 @@ const port = process.env.PORT || 3000;
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false
-  }
+    rejectUnauthorized: false,
+  },
 });
 
 // Middleware to parse JSON and serve static files
@@ -25,34 +25,27 @@ app.set('trust proxy', true);
 // Dynamic route to serve any HTML file from /public/pages/
 app.get('/:page', (req, res) => {
   const page = req.params.page;
-  const filePath = `${__dirname}/public/pages/${page}.html`;
+  const filePath = __dirname + `/public/pages/${page}.html`;
 
   // Check if the file exists before sending it
   if (fs.existsSync(filePath)) {
     res.sendFile(filePath);
   } else {
-    res.status(404).sendFile(`${__dirname}/public/pages/404.html`);
+    res.status(404).sendFile(__dirname + '/public/pages/404.html');
   }
-});
-
-// Handle specific routes to avoid hardcoding `/public/pages/`
-app.get('/logs', (req, res) => {
-  res.sendFile(`${__dirname}/public/pages/logs.html`);
-});
-
-app.get('/', (req, res) => {
-  res.sendFile(`${__dirname}/public/pages/index.html`);
 });
 
 // Handle 404 errors for unknown pages
 app.use((req, res) => {
-  res.status(404).sendFile(`${__dirname}/public/pages/404.html`);
+  res.status(404).sendFile(__dirname + '/public/pages/404.html');
 });
 
 // Function to get the national diesel price from the API
 async function getDieselPrice() {
   try {
-    const response = await axios.get('https://api.eia.gov/v2/petroleum/pri/gnd/data/?frequency=weekly&data[0]=value&facets[series][]=EMD_EPD2D_PTE_NUS_DPG&sort[0][column]=period&sort[0][direction]=desc&offset=0&length=5000&api_key=skeZaLa1T8axibuDLl5lo9W7hD08lsudhyHneZvc');
+    const response = await axios.get(
+      'https://api.eia.gov/v2/petroleum/pri/gnd/data/?frequency=weekly&data[0]=value&facets[series][]=EMD_EPD2D_PTE_NUS_DPG&sort[0][column]=period&sort[0][direction]=desc&offset=0&length=5000&api_key=skeZaLa1T8axibuDLl5lo9W7hD08lsudhyHneZvc'
+    );
     if (response.data && response.data.error) {
       console.error('API Error:', response.data.error);
       return null;
@@ -61,7 +54,10 @@ async function getDieselPrice() {
     console.log('Fetched Diesel Price:', dieselPrice); // Log the fetched diesel price
     return dieselPrice;
   } catch (error) {
-    console.error('Error fetching diesel price:', error.response ? error.response.data : error.message);
+    console.error(
+      'Error fetching diesel price:',
+      error.response ? error.response.data : error.message
+    );
     return null;
   }
 }
@@ -89,7 +85,9 @@ function calculateFSC(dieselPrice) {
   const additionalFSC = Math.floor((dieselPrice - 3.25) / 0.25) * 2.5;
 
   const fscPercentage = baseFSC + additionalFSC;
-  console.log(`FSC Calculation -> Diesel Price: ${dieselPrice}, Base FSC: ${baseFSC}%, Additional FSC: ${additionalFSC}%, Total FSC: ${fscPercentage}%`);
+  console.log(
+    `FSC Calculation -> Diesel Price: ${dieselPrice}, Base FSC: ${baseFSC}%, Additional FSC: ${additionalFSC}%, Total FSC: ${fscPercentage}%`
+  );
 
   return fscPercentage;
 }
@@ -108,7 +106,9 @@ async function calculateRate(zipCode, weight) {
       const baseRate = parseFloat(result.rows[0].rate);
       const dieselPrice = await getDieselPrice();
       if (dieselPrice === null) {
-        console.error('Unable to fetch diesel price. FSC cannot be applied.');
+        console.error(
+          'Unable to fetch diesel price. FSC cannot be applied.'
+        );
         return { linehaul: baseRate, fsc: 0, totalRate: baseRate, zone }; // Include zone in the return value
       }
       const fscPercentage = calculateFSC(dieselPrice);
@@ -116,7 +116,9 @@ async function calculateRate(zipCode, weight) {
       const fscAmount = Math.round((baseRate * fscPercentage) * 100) / 10000;
       const totalRate = Math.round((baseRate + fscAmount) * 100) / 100;
 
-      console.log(`Final Rate Calculation -> Base Rate: $${baseRate}, FSC Amount: $${fscAmount}, Total Rate: $${totalRate}`);
+      console.log(
+        `Final Rate Calculation -> Base Rate: $${baseRate}, FSC Amount: $${fscAmount}, Total Rate: $${totalRate}`
+      );
       return { linehaul: baseRate, fsc: fscAmount, totalRate: totalRate, zone }; // Return zone here
     } else {
       return null;
@@ -158,19 +160,28 @@ app.post('/log', async (req, res) => {
     fsc: rateDetails.fsc,
     totalRate: rateDetails.totalRate,
     zone: rateDetails.zone,
-    ip
+    ip,
   });
 
   try {
     await pool.query(
       'INSERT INTO logs (date, zip_code, shipment_weight, linehaul, fsc, total_rate, zone, ip) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
-      [date, zipCode, validShipmentWeight, rateDetails.linehaul, rateDetails.fsc, rateDetails.totalRate, rateDetails.zone, ip]
+      [
+        date,
+        zipCode,
+        validShipmentWeight,
+        rateDetails.linehaul,
+        rateDetails.fsc,
+        rateDetails.totalRate,
+        rateDetails.zone,
+        ip,
+      ]
     );
     res.status(200).json({
       message: 'Log saved successfully',
       linehaul: rateDetails.linehaul,
       fsc: rateDetails.fsc,
-      totalRate: rateDetails.totalRate
+      totalRate: rateDetails.totalRate,
     });
   } catch (err) {
     console.error('Error saving log data:', err);

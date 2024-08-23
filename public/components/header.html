@@ -1,22 +1,9 @@
 <header>
   <div class="logo-container">
-      <img src="../img/SF-LOGO-Rect-but-sm.png" alt="SF Distributors Logo" class="logo">
-      <h1>SF Distributors Final Mile</h1>
+    <img class="logo" src="/public/img/SF-LOGO-Rect-but-sm.png" alt="SF Distributors">
   </div>
-  <!-- This div will dynamically load the navigation from nav.html -->
-  <div id="navigation-container"></div>
+  <div class="nav-container">
+    <!-- This will include the navigation dynamically -->
+    <nav id="main-nav"></nav>
+  </div>
 </header>
-
-<script>
-  // Dynamically load the navigation into the header
-  function loadNavigation() {
-      fetch('/components/nav.html')
-          .then(response => response.text())
-          .then(data => {
-              document.getElementById('navigation-container').innerHTML = data;
-          })
-          .catch(error => console.error('Error loading navigation:', error));
-  }
-
-  loadNavigation();
-</script>
