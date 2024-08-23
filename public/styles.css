@@ -1,66 +1,65 @@
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
     margin: 0;
     padding: 20px;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
 }
 
 .container {
-    background: #ffffff;
-    padding: 30px;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
-    width: 100%;
-    max-width: 600px;
+    width: 350px;
 }
 
 h1 {
     margin-bottom: 20px;
-    color: #343a40;
-    text-align: center;
+    color: #444;
 }
 
 label {
-    font-weight: 500;
-    margin-bottom: 5px;
+    font-weight: bold;
+    margin-bottom: 10px;
     display: block;
+    text-align: left;
 }
 
 input[type="text"],
 input[type="number"] {
     width: 100%;
     padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ced4da;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
     border-radius: 5px;
-    font-size: 16px;
 }
 
 button {
-    background-color: #007bff;
+    background-color: #5cb85c;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 8px 16px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 18px;
-    width: 100%;
-    margin-bottom: 20px;
+    font-size: 14px;
+    margin-bottom: 10px;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #4cae4c;
 }
 
 .result-container {
     margin-top: 20px;
-    padding: 15px;
-    background: #f8f9fa;
-    border: 1px solid #ced4da;
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
     border-radius: 5px;
 }
 
@@ -73,24 +72,25 @@ button:hover {
     font-weight: bold;
 }
 
-#log-section {
-    margin-top: 30px;
-}
-
-table {
-    width: 100%;
+#log-table-container {
     margin-top: 20px;
+    display: none; /* Hidden by default */
+}
+
+#log-table {
+    width: 100%;
     border-collapse: collapse;
+    margin-top: 10px;
 }
 
-th,
-td {
-    padding: 10px;
+#log-table th,
+#log-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
     text-align: center;
-    border: 1px solid #dee2e6;
 }
 
-th {
-    background-color: #007bff;
-    color: white;
+#log-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
 }

@@ -127,14 +127,17 @@ app.post('/log', async (req, res) => {
     date,
     zipCode,
     shipmentWeight: validShipmentWeight,
+    linehaul: rateDetails.linehaul,
+    fsc: rateDetails.fsc,
     totalRate: rateDetails.totalRate,
+    zone: rateDetails.zone,
     ip
   });
 
   try {
     await pool.query(
-      'INSERT INTO logs (date, zip_code, shipment_weight, rate, error, ip) VALUES ($1, $2, $3, $4, $5, $6)',
-      [date, zipCode, validShipmentWeight, rateDetails.totalRate, null, ip]
+      'INSERT INTO logs (date, zip_code, shipment_weight, linehaul, fsc, total_rate, zone, ip) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+      [date, zipCode, validShipmentWeight, rateDetails.linehaul, rateDetails.fsc, rateDetails.totalRate, rateDetails.zone, ip]
     );
     res.status(200).json({
       message: 'Log saved successfully',
@@ -147,6 +150,7 @@ app.post('/log', async (req, res) => {
     res.status(500).json({ message: 'Error saving log data' });
   }
 });
+
 
 // GET route to fetch logs
 app.get('/logs', async (req, res) => {

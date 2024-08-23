@@ -64,8 +64,10 @@ async function fetchLogs() {
                 <td>${new Date(log.date).toLocaleString()}</td>
                 <td>${log.zip_code}</td>
                 <td>${log.shipment_weight}</td>
-                <td>${log.rate}</td>
-                <td>${log.ip}</td>
+                <td>${log.zone}</td>
+                <td>$${log.linehaul.toFixed(2)}</td>
+                <td>$${log.fsc.toFixed(2)}</td>
+                <td>$${log.total_rate.toFixed(2)}</td>
             `;
             logTableBody.appendChild(row);
         });
