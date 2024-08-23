@@ -16,6 +16,9 @@ const pool = new Pool({
 app.use(express.json());
 app.use(express.static('public')); // Serve static files (like index.html)
 
+// Trust the proxy to get the real IP address from the X-Forwarded-For header
+app.set('trust proxy', true);
+
 // Function to get the national diesel price from the API
 async function getDieselPrice() {
   try {
@@ -86,7 +89,10 @@ async function calculateRate(zipCode, weight) {
 
 // POST route to log calculation and return rate details
 app.post('/log', async (req, res) => {
-  const { date, zipCode, shipmentWeight, ip } = req.body;
+  const { date, zipCode, shipmentWeight } = req.body;
+
+  // Extract the real IP address from the X-Forwarded-For header
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
   // Validate and parse the shipmentWeight to ensure it's numeric
   const validShipmentWeight = parseFloat(shipmentWeight);
@@ -129,6 +135,7 @@ app.post('/log', async (req, res) => {
   }
 });
 
+// GET route to fetch logs
 app.get('/logs', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM logs ORDER BY date DESC');
@@ -138,7 +145,6 @@ app.get('/logs', async (req, res) => {
     res.status(500).json({ message: 'Error fetching logs' });
   }
 });
-
 
 // Start the server
 app.listen(port, () => {

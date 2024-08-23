@@ -1,3 +1,4 @@
+// Function to handle rate calculation form submission
 document.getElementById('rateForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
@@ -9,11 +10,12 @@ document.getElementById('rateForm').addEventListener('submit', function (e) {
     const fscSpan = document.getElementById('fsc');
     const totalRateSpan = document.getElementById('totalRate');
 
+    // Prepare the log entry data to send to the server
     const logEntry = {
         date: new Date().toISOString(),
         zipCode: zipCode,
-        shipmentWeight: parseFloat(shipmentWeight),
-        ip: "127.0.0.1" // You can update this to fetch the real IP
+        shipmentWeight: parseFloat(shipmentWeight) // Parse to ensure it's a number
+        // No need to include the IP; it's handled server-side
     };
 
     fetch('/log', {
@@ -46,27 +48,28 @@ document.getElementById('rateForm').addEventListener('submit', function (e) {
         errorContainer.style.display = 'block';
     });
 });
+
+// Function to fetch and display logs
 async function fetchLogs() {
     try {
-      const response = await fetch('/logs');
-      const logs = await response.json();
-      
-      const logTableBody = document.getElementById('log-table-body');
-      logTableBody.innerHTML = ''; // Clear existing logs
-  
-      logs.forEach(log => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${new Date(log.date).toLocaleString()}</td>
-          <td>${log.zip_code}</td>
-          <td>${log.shipment_weight}</td>
-          <td>${log.rate}</td>
-          <td>${log.ip}</td>
-        `;
-        logTableBody.appendChild(row);
-      });
+        const response = await fetch('/logs');
+        const logs = await response.json();
+
+        const logTableBody = document.getElementById('log-table-body');
+        logTableBody.innerHTML = ''; // Clear existing logs
+
+        logs.forEach(log => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${new Date(log.date).toLocaleString()}</td>
+                <td>${log.zip_code}</td>
+                <td>${log.shipment_weight}</td>
+                <td>${log.rate}</td>
+                <td>${log.ip}</td>
+            `;
+            logTableBody.appendChild(row);
+        });
     } catch (err) {
-      console.error('Error fetching logs:', err);
+        console.error('Error fetching logs:', err);
     }
-  }
-  
+}
