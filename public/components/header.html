@@ -1,7 +1,22 @@
-<!-- /public/components/header.html -->
 <header>
-    <div class="logo-container">
-        <img src="../img/SF-LOGO-Rect-but-sm.png" alt="SF Distributors Logo" class="logo">
-        <h1>Final Mile Rating Tool</h1>
-    </div>
+  <div class="logo-container">
+      <img src="../img/SF-LOGO-Rect-but-sm.png" alt="SF Distributors Logo" class="logo">
+      <h1>SF Distributors Final Mile</h1>
+  </div>
+  <!-- This div will dynamically load the navigation from nav.html -->
+  <div id="navigation-container"></div>
 </header>
+
+<script>
+  // Dynamically load the navigation into the header
+  function loadNavigation() {
+      fetch('/components/nav.html')
+          .then(response => response.text())
+          .then(data => {
+              document.getElementById('navigation-container').innerHTML = data;
+          })
+          .catch(error => console.error('Error loading navigation:', error));
+  }
+
+  loadNavigation();
+</script>
