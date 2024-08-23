@@ -75,3 +75,15 @@ async function fetchLogs() {
         console.error('Error fetching logs:', err);
     }
 }
+// Toggle the visibility of the logs table
+document.getElementById('toggleLogsButton').addEventListener('click', function () {
+    const logTableContainer = document.getElementById('log-table-container');
+    if (logTableContainer.style.display === 'none' || logTableContainer.style.display === '') {
+        fetchLogs(); // Fetch the logs when the button is clicked
+        logTableContainer.style.display = 'block';
+        this.textContent = 'Hide Rating Logs';
+    } else {
+        logTableContainer.style.display = 'none';
+        this.textContent = 'Show Rating Logs';
+    }
+});
