@@ -50,14 +50,19 @@ async function getZoneByZipCode(zipCode) {
   }
 }
 
-// Function to calculate the fuel surcharge (FSC)
 function calculateFSC(dieselPrice) {
-  if (dieselPrice <= 3.25) return 0;
-  const increments = Math.floor((dieselPrice - 3.25) / 0.25);
-  const fscPercentage = increments * 2.5;
-  console.log(`FSC Calculation -> Diesel Price: ${dieselPrice}, Increments: ${increments}, FSC Percentage: ${fscPercentage}%`); // Log FSC calculation details
+  if (dieselPrice < 3.25) return 0; // No surcharge below $3.25
+
+  // Start at 5% for $3.25, then add 2.5% for each additional $0.25 increment
+  const baseFSC = 5;
+  const additionalFSC = Math.floor((dieselPrice - 3.25) / 0.25) * 2.5;
+
+  const fscPercentage = baseFSC + additionalFSC;
+  console.log(`FSC Calculation -> Diesel Price: ${dieselPrice}, Base FSC: ${baseFSC}%, Additional FSC: ${additionalFSC}%, Total FSC: ${fscPercentage}%`);
+
   return fscPercentage;
 }
+
 
 // Function to calculate the rate based on the zip code and weight
 async function calculateRate(zipCode, weight) {
