@@ -25,19 +25,24 @@ app.set('trust proxy', true);
 // Dynamic route to serve any HTML file from /public/pages/
 app.get('/:page', (req, res) => {
   const page = req.params.page;
-  const filePath = __dirname + `/public/pages/${page}.html`;
+  const filePath = `${__dirname}/public/pages/${page}.html`;
 
   // Check if the file exists before sending it
   if (fs.existsSync(filePath)) {
     res.sendFile(filePath);
   } else {
-    res.status(404).sendFile(__dirname + '/public/pages/404.html');
+    res.status(404).sendFile(`${__dirname}/public/pages/404.html`);
   }
+});
+
+// Route to handle the home page separately
+app.get('/', (req, res) => {
+  res.sendFile(`${__dirname}/public/pages/index.html`);
 });
 
 // Handle 404 errors for unknown pages
 app.use((req, res) => {
-  res.status(404).sendFile(__dirname + '/public/pages/404.html');
+  res.status(404).sendFile(`${__dirname}/public/pages/404.html`);
 });
 
 // Function to get the national diesel price from the API
