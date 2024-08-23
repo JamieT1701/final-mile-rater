@@ -82,8 +82,11 @@ async function calculateRate(zipCode, weight) {
         return { linehaul: baseRate, fsc: 0, totalRate: baseRate };
       }
       const fscPercentage = calculateFSC(dieselPrice);
-      const fscAmount = parseFloat(((baseRate * fscPercentage) / 100).toFixed(2));
-      const totalRate = parseFloat((baseRate + fscAmount).toFixed(2));
+      
+      // Properly rounding the FSC amount
+      const fscAmount = Math.round((baseRate * fscPercentage) * 100) / 10000;
+      
+      const totalRate = Math.round((baseRate + fscAmount) * 100) / 100;
 
       console.log(`Final Rate Calculation -> Base Rate: $${baseRate}, FSC Amount: $${fscAmount}, Total Rate: $${totalRate}`); // Log final rate details
       return { linehaul: baseRate, fsc: fscAmount, totalRate: totalRate };
@@ -95,6 +98,7 @@ async function calculateRate(zipCode, weight) {
     return null;
   }
 }
+
 
 // POST route to log calculation and return rate details
 app.post('/log', async (req, res) => {
