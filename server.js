@@ -67,7 +67,7 @@ function calculateFSC(dieselPrice) {
 // Function to calculate the rate based on the zip code and weight
 async function calculateRate(zipCode, weight) {
   const zone = await getZoneByZipCode(zipCode);
-  if (!zone) return null;
+  if (!zone) return null; // Ensure the zone is correctly retrieved
 
   try {
     const result = await pool.query(
@@ -79,17 +79,15 @@ async function calculateRate(zipCode, weight) {
       const dieselPrice = await getDieselPrice();
       if (dieselPrice === null) {
         console.error('Unable to fetch diesel price. FSC cannot be applied.');
-        return { linehaul: baseRate, fsc: 0, totalRate: baseRate };
+        return { linehaul: baseRate, fsc: 0, totalRate: baseRate, zone }; // Include zone in the return value
       }
       const fscPercentage = calculateFSC(dieselPrice);
-      
-      // Properly rounding the FSC amount
+
       const fscAmount = Math.round((baseRate * fscPercentage) * 100) / 10000;
-      
       const totalRate = Math.round((baseRate + fscAmount) * 100) / 100;
 
-      console.log(`Final Rate Calculation -> Base Rate: $${baseRate}, FSC Amount: $${fscAmount}, Total Rate: $${totalRate}`); // Log final rate details
-      return { linehaul: baseRate, fsc: fscAmount, totalRate: totalRate };
+      console.log(`Final Rate Calculation -> Base Rate: $${baseRate}, FSC Amount: $${fscAmount}, Total Rate: $${totalRate}`);
+      return { linehaul: baseRate, fsc: fscAmount, totalRate: totalRate, zone }; // Return zone here
     } else {
       return null;
     }
@@ -98,6 +96,7 @@ async function calculateRate(zipCode, weight) {
     return null;
   }
 }
+
 
 
 // POST route to log calculation and return rate details

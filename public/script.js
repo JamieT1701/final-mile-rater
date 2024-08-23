@@ -92,6 +92,8 @@ function updatePagination() {
     const paginationContainer = document.querySelector('.pagination');
     paginationContainer.innerHTML = '';
 
+    if (totalPages <= 1) return; // No need for pagination if only 1 page
+
     for (let i = 1; i <= totalPages; i++) {
         const button = document.createElement('button');
         button.textContent = i;
@@ -103,6 +105,7 @@ function updatePagination() {
         paginationContainer.appendChild(button);
     }
 }
+
 
 // Toggle the visibility of the logs table
 document.getElementById('toggleLogsButton').addEventListener('click', function () {
