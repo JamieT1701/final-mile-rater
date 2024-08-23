@@ -1,11 +1,13 @@
 const express = require('express');
 const { Pool } = require('pg');
 const axios = require('axios');
+const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Set up PostgreSQL connection pool
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
@@ -13,27 +15,30 @@ const pool = new Pool({
   }
 });
 
+// Middleware to parse JSON and serve static files
 app.use(express.json());
-app.use(express.static('public')); // Serve static files (like index.html)
+app.use(express.static('public')); // Serve static assets from the public folder
 
-// Route to serve the root path ("/") with index.html
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/pages/index.html');
-});
+// Trust the proxy to get the real IP address from the X-Forwarded-For header
+app.set('trust proxy', true);
 
 // Dynamic route to serve any HTML file from /public/pages/
 app.get('/:page', (req, res) => {
   const page = req.params.page;
-  res.sendFile(__dirname + `/public/pages/${page}.html`);
+  const filePath = __dirname + `/public/pages/${page}.html`;
+
+  // Check if the file exists before sending it
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+    res.status(404).sendFile(__dirname + '/public/pages/404.html');
+  }
 });
 
 // Handle 404 errors for unknown pages
 app.use((req, res) => {
   res.status(404).sendFile(__dirname + '/public/pages/404.html');
 });
-
-// Trust the proxy to get the real IP address from the X-Forwarded-For header
-app.set('trust proxy', true);
 
 // Function to get the national diesel price from the API
 async function getDieselPrice() {
@@ -66,6 +71,7 @@ async function getZoneByZipCode(zipCode) {
   }
 }
 
+// Function to calculate the fuel surcharge (FSC)
 function calculateFSC(dieselPrice) {
   if (dieselPrice < 3.25) return 0; // No surcharge below $3.25
 
